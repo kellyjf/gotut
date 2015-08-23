@@ -3,6 +3,9 @@ package main
 import (
 "fmt" 
 "errors" 
+"strings" 
+//"io/ioutil" 
+"bufio" 
 "os" 
 )
 
@@ -26,15 +29,36 @@ func (stack *Stack) Pop() (item interface{}, err error) {
 }
 
 func main() {
+	var passwd []byte
+	var err error
+	var line string
+//	passwd, err = ioutil.ReadFile("./passwd")
+	file, err := os.Open("./passwd")
+	if err != nil  {
+		return
+	}
+	reader := bufio.NewReader(file)
+	for line,err = reader.ReadString('\n'); err==nil; line,err=reader.ReadString('\n')  {
+		fmt.Print(line)
+		fields := strings.Split(line,":")
+		for _,f := range fields {
+			fmt.Println(f)
+		}
+	}
+		
+	if err == nil {
+		line:=string(passwd)
+		fmt.Println(line)
+	}
+}
+
+func stack_main() {
 	var stack Stack
 	var val interface{}
 	var err error
 
-	for x, y:= range os.Args {
+	for x := range os.Args {
 		stack.Append(os.Args[x])
-		fmt.Println("Hello, World " + string(x))
-		fmt.Println(x)
-		fmt.Println(y)
 	}
 	fmt.Println(stack.Len())
 	for val,err = stack.Pop(); err==nil; val,err=stack.Pop() {
